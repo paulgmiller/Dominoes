@@ -26,7 +26,6 @@ namespace Dominoes
 
         public string ToString()
         {
-            this.H
             return string.Format("[{0}|{1}]", First, Second);
         }
 
@@ -35,5 +34,11 @@ namespace Dominoes
             //good chance this is buggy
             return (MAX_DOTS+1)*First + Second;
         }
+
+        public bool IsDouble()
+        {
+            return First == Second;
+        }
+            
     }
 }

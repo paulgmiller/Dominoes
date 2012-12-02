@@ -14,7 +14,7 @@ namespace Dominoes
         public Tiles()
         {
             var dotrange = Enumerable.Range(Domino.MIN_DOTS, Domino.MAX_DOTS);
-            var initial = dotrange.SelectMany(f => Enumerable.Range(Domino.MIN_DOTS, f).Select(s => new Domino(f, s)))
+            var initial = dotrange.SelectMany(f => Enumerable.Range(Domino.MIN_DOTS, f).Select(s => new Domino(f, s)));
             var shuffled = initial.OrderBy(d => rnd.Next());
             _tiles = new Queue<Domino>(shuffled);
             
