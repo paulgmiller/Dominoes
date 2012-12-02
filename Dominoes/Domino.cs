@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dominoes
 {
-    class Domino
+    public class Domino
     {
         public int First { get; private set; }
         public int Second { get; private set; }
@@ -24,12 +24,12 @@ namespace Dominoes
                 throw new ArgumentOutOfRangeException(string.Format("second isn't a valid domino: {0}", Second));
         }
 
-        public string ToString()
+        public override string ToString()
         {
             return string.Format("[{0}|{1}]", First, Second);
         }
 
-        public int GetHashCode()
+        public override int GetHashCode()
         {
             //good chance this is buggy
             return (MAX_DOTS+1)*First + Second;
@@ -39,6 +39,10 @@ namespace Dominoes
         {
             return First == Second;
         }
-            
+
+        public bool Matches(int end)
+        {
+            return end == First || end == Second;
+        }
     }
 }

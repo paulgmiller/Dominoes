@@ -74,7 +74,7 @@ namespace Dominoes
             return _root.Ends();
         }
 
-        void Add(Node end, Domino d)
+        public  void Add(Node end, Domino d)
         {
             if (!Ends().Contains(end))
             {
