@@ -19,22 +19,21 @@ namespace Dominoes
                  End = Value.First;
              else
                  throw new ArgumentException("Dominoes don't match");
-             //Need to know who's player I am.
+            
         }
 
-        //used to start the game
-        internal  Node(Domino v, IEnumerable<string> players)
+        //should only be used to start lines.
+        internal  Node(Domino v)
         {
              if (!v.IsDouble())
                 throw new ArgumentException("Must start game graph with double");
             
              Value  = v;
-             Available  = players.Count(); //+1 for mexican?
+             Available  = 1;
              Children = new List<Node>();
              End = Value.First;
         }
         public int Available { get; private set; }
-        
         public Domino Value { get; private set; }
         public int End { get; private set; }
         public List<Node> Children { get; private  set; }
@@ -58,25 +57,52 @@ namespace Dominoes
         }
     }
 
+    
+
     class GameGraph
     {
-        private Node _root;
         
-        public GameGraph(Domino starter)
+        private class Line
+        {
+            public IPlayer Owner; 
+            public Node Start;
+        }
+
+        private Domino _root = null;
+        private List<Line> _lines;
+
+        public GameGraph(IEnumerable<IPlayer> players)
+        {
+           _lines = players.Select(p => new Line { Owner = p }).ToList();
+        }
+
+        public void Start(Domino starter)
         {
             if (!starter.IsDouble())
                 throw new ArgumentException("Must start game graph with double");
-            _root = new Node(starter, new [] { "fred", "wilma", "barney", "betty" } );
+            
+            if (_root != null)
+                throw new InvalidOperationException("Graph already started");
+
+            _root = starter;
+            foreach (var line in _lines)
+            {
+                line.Start = new Node(starter);
+            }
         }
 
-        public IEnumerable<Node> Ends()
+        public IEnumerable<Node> Ends(IPlayer player)
         {
-            return _root.Ends();
+            var openlines = _lines.Where(l => l.Owner == player || l.Owner.IsOpen());
+            return openlines.SelectMany(l => l.Start.Ends());
         }
 
-        public  void Add(Node end, Domino d)
+        public  void Add(Node end, Domino d, IPlayer player)
         {
-            if (!Ends().Contains(end))
+            if (_root != null)
+                throw new InvalidOperationException("Graph has not been started");
+
+            if (!Ends(player).Contains(end))
             {
                 throw new ArgumentException("Must use a valid end!");
             }

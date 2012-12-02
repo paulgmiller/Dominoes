@@ -107,13 +107,15 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Domino.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="GameGraph.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Players\Mexican.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RobotPlayer.cs" />
+    <Compile Include="Players\RobotPlayer.cs" />
     <Compile Include="Tiles.cs" />
   </ItemGroup>
   <ItemGroup>

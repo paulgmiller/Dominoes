@@ -10,6 +10,8 @@ namespace Dominoes
     {
         string Name();
         bool IsOpen();
-        bool Play();
+        bool Play(GameGraph game);
+        bool Start(int startVale, GameGraph graph); 
+        void Draw();
     }
 }
