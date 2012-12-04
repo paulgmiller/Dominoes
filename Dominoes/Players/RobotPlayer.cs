@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 
 namespace Dominoes.Players
 {
-    class RobotPlayer : IPlayer
+    public class Hand : List<Domino>
+    {
+        public string ToString() { return String.Join(" ", this.Select(d => d.ToString())); }        
+    }
+    
+    public class RobotPlayer : IPlayer
     {
         //should be in config class.
         public static readonly int InitialDraw = 7;
         
         private bool _isOpen = false;
         private Tiles _tiles;
-        private List<Domino> _hand;
+        private Hand _hand;
         private string _name;
 
         static string[] _names = new[] { "fred", "wilma", "barney", "betty", "wintanabot" };
@@ -24,16 +29,22 @@ namespace Dominoes.Players
             _tiles = t;
             _name = _names[_robotCount] + " " + _robotCount.ToString();
             ++_robotCount;
-            _hand = new List<Domino>();
+            _hand = new Hand();
             while (_hand.Count < InitialDraw)
             {
                 Draw();
             }   
+            
+            Global.Logger.LogComment(string.Format("{0} drew {1}", Name(), _hand));
         }
+
+        
 
         public void Draw()
         {
-            _hand.Add(_tiles.Next());
+            var domino = _tiles.Next();
+            Global.Logger.LogComment(string.Format("{0} drew a {1}", Name(), domino));
+            _hand.Add(domino);
         }
 
         public string Name()
@@ -62,7 +73,7 @@ namespace Dominoes.Players
 
         public bool Start(int startValue, GameGraph g)
         {
-            Domino match = _hand.Where(d => d.IsDouble()).FirstOrDefault(d => d.First == startValue);
+            Domino match = _hand.Where(d => d.IsDouble()).FirstOrDefault(d => d.Matches(startValue));
             if (match == null) return false ;
             
             _hand.Remove(match);
@@ -78,6 +89,7 @@ namespace Dominoes.Players
                 if (match != null)
                 {
                     game.Add(end, match, this);
+                    Global.Logger.LogComment(string.Format("{0} played  {1}", Name(), match));
                     _hand.Remove(match);
                     return true;
                 }

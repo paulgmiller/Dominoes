@@ -59,7 +59,7 @@ namespace Dominoes
 
     
 
-    class GameGraph
+    public class GameGraph
     {
         
         private class Line
@@ -99,10 +99,11 @@ namespace Dominoes
 
         public  void Add(Node end, Domino d, IPlayer player)
         {
-            if (_root != null)
+            if (_root == null)
                 throw new InvalidOperationException("Graph has not been started");
 
-            if (!Ends(player).Contains(end))
+            var possibleEnds = Ends(player);
+            if (!possibleEnds.Contains(end))
             {
                 throw new ArgumentException("Must use a valid end!");
             }

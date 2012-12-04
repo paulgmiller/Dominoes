@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dominoes
 {
-    interface IPlayer
+    public interface IPlayer
     {
         string Name();
         bool IsOpen();

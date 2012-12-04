@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Dominoes
 {
-    class Tiles
+    public class Tiles
     {
         private Queue<Domino> _tiles;
-        static readonly Random rnd = new Random();
+        private static readonly Random rnd = new Random();
 
         public Tiles()
         {
-            var dotrange = Enumerable.Range(Domino.MIN_DOTS, Domino.MAX_DOTS);
-            var initial = dotrange.SelectMany(f => Enumerable.Range(Domino.MIN_DOTS, f).Select(s => new Domino(f, s)));
+            var dotrange = Enumerable.Range(Domino.MIN_DOTS, Domino.MAX_DOTS+1);
+            var initial = dotrange.SelectMany(f => Enumerable.Range(Domino.MIN_DOTS, f+1).Select(s => new Domino(f, s)));
             var shuffled = initial.OrderBy(d => rnd.Next());
             _tiles = new Queue<Domino>(shuffled);
             

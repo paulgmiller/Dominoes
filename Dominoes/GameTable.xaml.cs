@@ -19,12 +19,15 @@ namespace Dominoes
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class GameTable : Page
     {
-        public MainPage()
+        public GameTable()
         {
             this.InitializeComponent();
+            
         }
+
+        private Game oneGame;
 
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
@@ -33,6 +36,9 @@ namespace Dominoes
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            var logger = new TextBlockLogger(Log);
+            Global.Logger = logger;
+            oneGame = new Game();
         }
     }
 }

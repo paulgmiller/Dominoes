@@ -106,16 +106,18 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameTable.xaml.cs">
+      <DependentUpon>GameTable.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Domino.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameGraph.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="IPlayer.cs" />
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Players\Mexican.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Players\RobotPlayer.cs" />
+    <Compile Include="TextBlockLogger.cs" />
     <Compile Include="Tiles.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +131,10 @@
     <Content Include="Assets\SmallLogo.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
+    <Page Include="GameTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -136,10 +142,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Common\StandardStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

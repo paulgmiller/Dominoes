@@ -27,7 +27,7 @@ namespace Dominoes
             {
                 winner = Circle().Play(_graph);
             }
-            //System.Console.Writeline(_player.Current.Name + " Wins");
+            Global.Logger.LogComment(_player.Current.Name() + " Wins");
             
         }   
 
@@ -37,12 +37,11 @@ namespace Dominoes
             for (int startValue = Domino.MAX_DOTS; startValue >= Domino.MIN_DOTS; --startValue)
             {
                 _player = _players.GetEnumerator();
-                do
+                while (_player.MoveNext()) 
                 {
                     if (_player.Current.Start(startValue, _graph))
-                        return;
-                    
-                } while (_player.MoveNext());
+                        return;                    
+                } 
             }
 
             //nobody had a double.
@@ -54,9 +53,13 @@ namespace Dominoes
 
         public IPlayer Circle()
         {
-            if (!_player.MoveNext())
-                _player = _players.GetEnumerator();
+            //Assert we have some players?
 
+            if (!_player.MoveNext())
+            {
+                _player = _players.GetEnumerator();
+                _player.MoveNext();
+            }
             return _player.Current;
         }
 

@@ -10,8 +10,8 @@ namespace Dominoes
     {
         public int First { get; private set; }
         public int Second { get; private set; }
-        public readonly static int MAX_DOTS;
-        public readonly static int MIN_DOTS;
+        public readonly static int MAX_DOTS = 12; 
+        public readonly static int MIN_DOTS = 0;
 
         public Domino(int one, int two)
         {
