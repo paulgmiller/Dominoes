@@ -35,7 +35,7 @@ namespace Dominoes.Players
                 Draw();
             }   
             
-            Global.Logger.LogComment(string.Format("{0} drew {1}", Name(), _hand));
+            Global.Logger.LogComment(string.Format("{0, 7} drew {1}", Name(), _hand));
         }
 
         
@@ -99,7 +99,7 @@ namespace Dominoes.Players
                 {
                     game.Add(end, match, this);
                     _hand.Remove(match);
-                    Global.Logger.LogComment(string.Format("{0} played {1} and has {2} left", Name(), match, _hand.Count));
+                    Global.Logger.LogComment(string.Format("{0} played {1} on {2}'s line and has {3} left", Name(), match, end.Owner, _hand.Count));
                     if (_isOpen && end.Owner == this)
                     {
                         Global.Logger.LogComment(string.Format("{0}'s line closed", Name()));
