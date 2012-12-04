@@ -17,6 +17,7 @@ namespace Dominoes
             var initial = dotrange.SelectMany(f => Enumerable.Range(Domino.MIN_DOTS, f+1).Select(s => new Domino(f, s)));
             var shuffled = initial.OrderBy(d => rnd.Next());
             _tiles = new Queue<Domino>(shuffled);
+            Global.Logger.LogDebug(string.Format("Shuffled {0} dominoes", _tiles.Count));
             
         }
 

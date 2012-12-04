@@ -65,19 +65,17 @@ namespace Dominoes.Players
 
         public bool Play(GameGraph game)
         {
-            bool played = LookFormatch(game); 
-            if (!played)
+            if (!LookFormatch(game))
             {
                 Draw();
-                played = LookFormatch(game);
+                if (!LookFormatch(game)&& !_isOpen)
+                {
+                    Global.Logger.LogComment(string.Format("{0}'s line opened", Name()));
+                    _isOpen = true;
+                }
             }
-            if (_isOpen && !played)
-                Global.Logger.LogDebug(string.Format("{0}'s line opened", Name()));
-            if (!_isOpen && played)
-                Global.Logger.LogDebug(string.Format("{0}'s line closed", Name()));
+
             
-            //opes this is supposed to only close if he plays on his line
-            _isOpen = played;
             return _hand.Count < 1;
             
         }
@@ -100,11 +98,17 @@ namespace Dominoes.Players
                 if (match != null)
                 {
                     game.Add(end, match, this);
-                    Global.Logger.LogComment(string.Format("{0} played  {1}", Name(), match));
                     _hand.Remove(match);
+                    Global.Logger.LogComment(string.Format("{0} played {1} and has {2} left", Name(), match, _hand.Count));
+                    if (_isOpen && end.Owner == this)
+                    {
+                        Global.Logger.LogComment(string.Format("{0}'s line closed", Name()));
+                        _isOpen = false;
+                    }
                     return true;
                 }
             }
+            
             return false;
         }
 

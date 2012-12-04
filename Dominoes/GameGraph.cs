@@ -19,11 +19,12 @@ namespace Dominoes
                  End = Value.First;
              else
                  throw new ArgumentException("Dominoes don't match");
+             Owner = parent.Owner;
             
         }
 
         //should only be used to start lines.
-        internal  Node(Domino v)
+        internal  Node(Domino v, IPlayer owner)
         {
              if (!v.IsDouble())
                 throw new ArgumentException("Must start game graph with double");
@@ -32,12 +33,14 @@ namespace Dominoes
              Available  = 1;
              Children = new List<Node>();
              End = Value.First;
+             Owner = owner;
         }
         public int Available { get; private set; }
         public Domino Value { get; private set; }
         public int End { get; private set; }
         public List<Node> Children { get; private  set; }
-        
+        public IPlayer Owner { get; private set; }
+
         public void AddChild(Domino child)
         {
            if (Available <= 0) 
@@ -61,19 +64,13 @@ namespace Dominoes
 
     public class GameGraph
     {
-        
-        private class Line
-        {
-            public IPlayer Owner; 
-            public Node Start;
-        }
-
         private Domino _root = null;
-        private List<Line> _lines;
+        private List<Node> _lines;
+        private IEnumerable<IPlayer> _players;
 
         public GameGraph(IEnumerable<IPlayer> players)
         {
-           _lines = players.Select(p => new Line { Owner = p }).ToList();
+            _players = players;
         }
 
         public void Start(Domino starter)
@@ -85,16 +82,13 @@ namespace Dominoes
                 throw new InvalidOperationException("Graph already started");
 
             _root = starter;
-            foreach (var line in _lines)
-            {
-                line.Start = new Node(starter);
-            }
+            _lines = _players.Select(p => new Node(starter, p )).ToList();
         }
 
         public IEnumerable<Node> Ends(IPlayer player)
         {
             var openlines = _lines.Where(l => l.Owner == player || l.Owner.IsOpen());
-            return openlines.SelectMany(l => l.Start.Ends());
+            return openlines.SelectMany(l => l.Ends());
         }
 
         public override string ToString()
@@ -104,8 +98,8 @@ namespace Dominoes
             foreach (var line in _lines)
             {
                 builder.AppendFormat("{0,-7}", line.Owner);
-                if (line.Start.Children.Any())
-                    PrintNode(line.Start.Children.First(), builder, 1);
+                if (line.Children.Any())
+                    PrintNode(line.Children.First(), builder, 1);
                 else
                     builder.AppendLine();
             }
@@ -127,8 +121,8 @@ namespace Dominoes
             PrintNode(node.Children.First(), sb, indent+1);
             foreach (var child in node.Children.Skip(1))
             {
-                foreach ( var i in Enumerable.Range(0,indent)) sb.Append("       ");
-                PrintNode(node.Children.First(), sb, indent+2);
+                foreach ( var i in Enumerable.Range(0,indent+1)) sb.Append("       ");
+                PrintNode(child, sb, indent + 2);
             }
         }
 
