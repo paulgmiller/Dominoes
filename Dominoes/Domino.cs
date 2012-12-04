@@ -26,7 +26,12 @@ namespace Dominoes
 
         public override string ToString()
         {
-            return string.Format("[{0}|{1}]", First, Second);
+            return string.Format("[{0,2}|{1,2}]", First, Second);
+        }
+
+        public string ToBackwardsString()
+        {
+            return string.Format("[{0,2}|{1,2}]", Second, First);
         }
 
         public override int GetHashCode()

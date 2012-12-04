@@ -97,6 +97,41 @@ namespace Dominoes
             return openlines.SelectMany(l => l.Start.Ends());
         }
 
+        public override string ToString()
+        {
+            var builder = new StringBuilder(); 
+            builder.AppendLine(_root.ToString());
+            foreach (var line in _lines)
+            {
+                builder.AppendFormat("{0,-7}", line.Owner);
+                if (line.Start.Children.Any())
+                    PrintNode(line.Start.Children.First(), builder, 1);
+                else
+                    builder.AppendLine();
+            }
+            return builder.ToString();
+        }
+
+        private void PrintNode(Node node, StringBuilder sb, int indent)
+        {
+            if (node.End == node.Value.Second)
+                sb.Append(node.Value);
+            else
+                sb.Append(node.Value.ToBackwardsString());
+
+            if (!node.Children.Any())
+            {
+                sb.AppendLine();
+                return;
+            }
+            PrintNode(node.Children.First(), sb, indent+1);
+            foreach (var child in node.Children.Skip(1))
+            {
+                foreach ( var i in Enumerable.Range(0,indent)) sb.Append("       ");
+                PrintNode(node.Children.First(), sb, indent+2);
+            }
+        }
+
         public  void Add(Node end, Domino d, IPlayer player)
         {
             if (_root == null)

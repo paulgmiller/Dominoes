@@ -24,7 +24,7 @@ namespace Dominoes
 
         public void LogDebug(string statement)
         {
-            throw new NotImplementedException();
+            //do nothing right now
         }
 
         public void LogError(string statement)

@@ -10,7 +10,12 @@ namespace Dominoes.Players
     {
         public string Name()
         {
- 	        return "Mexican";
+ 	        return "Mexi";
+        }
+
+        public override string ToString()
+        {
+            return Name();
         }
 
         public bool IsOpen()

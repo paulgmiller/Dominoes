@@ -8,7 +8,7 @@ namespace Dominoes.Players
 {
     public class Hand : List<Domino>
     {
-        public string ToString() { return String.Join(" ", this.Select(d => d.ToString())); }        
+        public override string ToString() { return String.Join(" ", this.Select(d => d.ToString())); }        
     }
     
     public class RobotPlayer : IPlayer
@@ -27,7 +27,7 @@ namespace Dominoes.Players
         public RobotPlayer(Tiles t)
         {
             _tiles = t;
-            _name = _names[_robotCount] + " " + _robotCount.ToString();
+            _name = _names[_robotCount]; // +" " + _robotCount.ToString();
             ++_robotCount;
             _hand = new Hand();
             while (_hand.Count < InitialDraw)
@@ -43,13 +43,18 @@ namespace Dominoes.Players
         public void Draw()
         {
             var domino = _tiles.Next();
-            Global.Logger.LogComment(string.Format("{0} drew a {1}", Name(), domino));
+            Global.Logger.LogDebug(string.Format("{0} drew a {1}", Name(), domino));
             _hand.Add(domino);
         }
 
         public string Name()
         {
             return _name;
+        }
+
+        public override string ToString()
+        {
+            return Name();
         }
 
         
@@ -66,6 +71,12 @@ namespace Dominoes.Players
                 Draw();
                 played = LookFormatch(game);
             }
+            if (_isOpen && !played)
+                Global.Logger.LogDebug(string.Format("{0}'s line opened", Name()));
+            if (!_isOpen && played)
+                Global.Logger.LogDebug(string.Format("{0}'s line closed", Name()));
+            
+            //opes this is supposed to only close if he plays on his line
             _isOpen = played;
             return _hand.Count < 1;
             
@@ -75,7 +86,7 @@ namespace Dominoes.Players
         {
             Domino match = _hand.Where(d => d.IsDouble()).FirstOrDefault(d => d.Matches(startValue));
             if (match == null) return false ;
-            
+            Global.Logger.LogComment(string.Format("{0} started {1}", Name(), match));
             _hand.Remove(match);
             g.Start(match);
             return true;
@@ -96,6 +107,8 @@ namespace Dominoes.Players
             }
             return false;
         }
+
+
 
     }
 }

@@ -28,7 +28,7 @@ namespace Dominoes
                 winner = Circle().Play(_graph);
             }
             Global.Logger.LogComment(_player.Current.Name() + " Wins");
-            
+            Global.Logger.LogComment(_graph.ToString());
         }   
 
         void Start()
