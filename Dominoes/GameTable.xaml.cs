@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -24,21 +25,25 @@ namespace Dominoes
         public GameTable()
         {
             this.InitializeComponent();
-            
+            Global.Logger = new TextBlockLogger(Log);
+            Table.PointerPressed += Table_PointerPressed;
         }
 
-        private Game oneGame;
+        void Table_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            Table.Text = new Game().Result();
+        }
 
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.  The Parameter
         /// property is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        async protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var logger = new TextBlockLogger(Log);
-            Global.Logger = logger;
-            oneGame = new Game();
+            Table.Text = new Game().Result();
+            await Task.Delay(2000);
+            Table.Text = new Game().Result();
         }
     }
 }

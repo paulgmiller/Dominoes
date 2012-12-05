@@ -71,7 +71,7 @@ namespace Dominoes.Players
                 Draw();
                 if (!LookFormatch(game)&& !_isOpen)
                 {
-                    Global.Logger.LogDebug(string.Format("{0}'s line opened", Name()));
+                    Global.Logger.LogComment(string.Format("{0}'s line opened", Name()));
                     _isOpen = true;
                 }
             }
@@ -82,7 +82,7 @@ namespace Dominoes.Players
         {
             Domino match = _hand.Where(d => d.IsDouble()).FirstOrDefault(d => d.Matches(startValue));
             if (match == null) return false ;
-            Global.Logger.LogDebug(string.Format("{0} started {1}", Name(), match));
+            Global.Logger.LogComment(string.Format("{0} started {1}", Name(), match));
             _hand.Remove(match);
             g.Start(match);
             return true;
@@ -96,10 +96,10 @@ namespace Dominoes.Players
                 //use a class instead of this tuple?
                 game.Add(pick.end, pick.domino, this);
                 _hand.Remove(pick.domino);
-                Global.Logger.LogDebug(string.Format("{0} played {1} on {2}'s line and has {3} left", Name(), pick.domino, pick.end.Owner, _hand.Count));
+                Global.Logger.LogComment(string.Format("{0} played {1} on {2}'s line and has {3} left", Name(), pick.domino, pick.end.Owner, _hand.Count));
                 if (_isOpen && pick.end.Owner == this)
                 {
-                    Global.Logger.LogDebug(string.Format("{0}'s line closed", Name()));
+                    Global.Logger.LogComment(string.Format("{0}'s line closed", Name()));
                     _isOpen = false;
                 }
                 return true;
@@ -118,7 +118,7 @@ namespace Dominoes.Players
 
     public class Fool : RobotPlayer
     {
-        private static string[] _names = new[] { "fred", "wilma", "barney", "betty" };
+        private static string[] _names = new[] { "fred", "wilma", "barney", "betty", "ted", "robert", "fanny" };
         private static int nameCount = 0;  
         private static string GenerateName() { return _names[nameCount++]; }
         public Fool(Tiles t) : base(t, new FirstTileStratedgy(), GenerateName()) { }

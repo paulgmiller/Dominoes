@@ -8,8 +8,13 @@
     mc:Ignorable="d">
 
     <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" Height="Auto">
-            <TextBlock x:Name="Log" FontFamily="Consolas" FontSize="20" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Dominoes" VerticalAlignment="Top" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="Table" Grid.Row="0" FontFamily="Consolas" FontSize="20" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Dominoes" VerticalAlignment="Top" />
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" Height="Auto" Grid.Row="1">
+            <TextBlock x:Name="Log"   FontFamily="Consolas" FontSize="20" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Log" VerticalAlignment="Top" />
         </ScrollViewer>
     </Grid>
 </Page>

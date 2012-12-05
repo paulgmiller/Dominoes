@@ -13,6 +13,7 @@ namespace Dominoes
         IEnumerator<IPlayer> _player;
         Tiles _tiles = new Tiles();
         GameGraph _graph;
+        string _result;
 
 
         public Game()
@@ -29,14 +30,19 @@ namespace Dominoes
                 {
                     winner = Circle().Play(_graph);
                 }
-                Global.Logger.LogComment(_player.Current.Name() + " Wins");
-                Global.Logger.LogComment(_graph.ToString());
+                _result += _player.Current.Name() + " Wins";
             }
             catch
             {
-                Global.Logger.LogComment("Out of tiles!");
+                _result += "Out of tiles!\n";
             }
-        }   
+            _result += _graph.ToString();
+        }
+
+        public string Result()
+        {
+            return _result;
+        }
 
         void Start()
         {
