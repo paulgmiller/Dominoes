@@ -115,6 +115,7 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="Players\Mexican.cs" />
+    <Compile Include="Players\RobotStratedgies.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Players\RobotPlayer.cs" />
     <Compile Include="TextBlockLogger.cs" />

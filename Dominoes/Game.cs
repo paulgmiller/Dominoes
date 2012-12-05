@@ -17,18 +17,25 @@ namespace Dominoes
 
         public Game()
         {
-            _players  = Enumerable.Range(0, 4).Select(c => new RobotPlayer(_tiles)).Cast<IPlayer>().ToList();
+            _players = new List<IPlayer> { new Fool(_tiles), new Moocher(_tiles), new Dumper(_tiles), new Fool(_tiles), new Fool(_tiles) };
             _players.Add(new Mexican());
             _graph = new GameGraph(_players);
             Start();
             //being too 
-            bool winner = false;
-            while (!winner) 
+            try
             {
-                winner = Circle().Play(_graph);
+                bool winner = false;
+                while (!winner)
+                {
+                    winner = Circle().Play(_graph);
+                }
+                Global.Logger.LogComment(_player.Current.Name() + " Wins");
+                Global.Logger.LogComment(_graph.ToString());
             }
-            Global.Logger.LogComment(_player.Current.Name() + " Wins");
-            Global.Logger.LogComment(_graph.ToString());
+            catch
+            {
+                Global.Logger.LogComment("Out of tiles!");
+            }
         }   
 
         void Start()

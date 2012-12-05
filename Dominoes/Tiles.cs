@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dominoes
 {
+
+    public class OutOfTiles : Exception { }
+
     public class Tiles
     {
         private Queue<Domino> _tiles;
@@ -28,6 +31,7 @@ namespace Dominoes
 
         public Domino Next()
         {
+            if (_tiles.Count == 0) throw new OutOfTiles();
             return _tiles.Dequeue();
         }
 

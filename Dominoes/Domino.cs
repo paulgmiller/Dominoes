@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dominoes
 {
-    public class Domino
+    public class Domino : IComparable<Domino>
     {
         public int First { get; private set; }
         public int Second { get; private set; }
@@ -48,6 +48,13 @@ namespace Dominoes
         public bool Matches(int end)
         {
             return end == First || end == Second;
+        }
+
+        public int Score { get { return First + Second; } }
+
+        public int CompareTo(Domino other)
+        {
+            return Score.CompareTo(other.Score);
         }
     }
 }
