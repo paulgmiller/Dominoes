@@ -18,7 +18,7 @@ namespace Dominoes
 
         public Game()
         {
-            _players = new List<IPlayer> { new Fool(_tiles), new Moocher(_tiles), new Dumper(_tiles), new Fool(_tiles), new Fool(_tiles) };
+            _players = new List<IPlayer> { new Fool(_tiles), new Moocher(_tiles), new Dumper(_tiles), new Boring(_tiles), new Fool(_tiles) };
             _players.Add(new Mexican());
             _graph = new GameGraph(_players);
             Start();

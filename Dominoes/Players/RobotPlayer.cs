@@ -116,13 +116,19 @@ namespace Dominoes.Players
         }
     }
 
-    public class Fool : RobotPlayer
+    public class Boring : RobotPlayer
     {
         private static string[] _names = new[] { "fred", "wilma", "barney", "betty", "ted", "robert", "fanny" };
         private static int nameCount = 0;  
         private static string GenerateName() { return _names[nameCount++]; }
-        public Fool(Tiles t) : base(t, new FirstTileStratedgy(), GenerateName()) { }
+        public Boring(Tiles t ) : base(t, new FirstTileStratedgy(), GenerateName()) { }
     }
+
+    public class Fool : RobotPlayer
+    {
+        public Fool(Tiles t): base (t, new Dumbness(new FirstTileStratedgy(), 10), "Pinky") {}
+    }
+
 
     public class Dumper : RobotPlayer
     {

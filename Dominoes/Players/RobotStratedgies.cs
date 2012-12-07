@@ -24,6 +24,28 @@ namespace Dominoes.Players
         Match Choose(Hand hand, IEnumerable<Node> ends);
     }
 
+    public class Dumbness : IRobotStratedgy
+    {
+        private static Random _rnd = new Random();
+        private int _missPercent;
+        private IRobotStratedgy _underlying;
+        public Dumbness(IRobotStratedgy underlying, int misspercent)
+        {
+            _missPercent = misspercent;
+            _underlying = underlying;
+            if ( misspercent < 0 || misspercent > 100)
+            {
+                throw new ArgumentOutOfRangeException("missperceent", "must be between 0 and 100 percent");
+            }
+        }
+           
+        public Match Choose(Hand hand, IEnumerable<Node> ends)
+        {
+            //miss some ends. Maybe they drank too much.
+           return  _underlying.Choose(hand, ends.Where(e => _rnd.Next(100) > _missPercent));
+        }
+    }
+
     
     //just take the first match you find
     public class FirstTileStratedgy  : IRobotStratedgy
