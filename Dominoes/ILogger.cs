@@ -8,9 +8,9 @@ namespace Dominoes
 {
     public interface ILogger
     {
-        void LogComment(string statement); 
-        void LogDebug(string statement);
-        void LogError(string statement);
+        void Comment(string statement); 
+        void Debug(string statement);
+        void Error(string statement);
     }
 
     public class Global

@@ -16,18 +16,18 @@ namespace Dominoes
             _block = tb;
         }
 
-        public void LogComment(string statement)
+        public void Comment(string statement)
         {
             _block.Text += "\n";            
             _block.Text += statement;
         }
 
-        public void LogDebug(string statement)
+        public void Debug(string statement)
         {
             //do nothing right now
         }
 
-        public void LogError(string statement)
+        public void Error(string statement)
         {
             throw new NotImplementedException();
         }

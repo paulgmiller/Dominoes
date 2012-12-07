@@ -10,7 +10,7 @@
     <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="120"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="Table" Grid.Row="0" FontFamily="Consolas" FontSize="20" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Dominoes" VerticalAlignment="Top" />
         <ScrollViewer HorizontalScrollBarVisibility="Auto" Height="Auto" Grid.Row="1">

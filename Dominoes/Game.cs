@@ -14,35 +14,41 @@ namespace Dominoes
         Tiles _tiles = new Tiles();
         GameGraph _graph;
         string _result;
+        Action<string> _paint; 
 
-
-        public Game()
+        public Game(Action<string> paint)
         {
             _players = new List<IPlayer> { new Fool(_tiles), new Moocher(_tiles), new Dumper(_tiles), new Boring(_tiles), new Fool(_tiles) };
             _players.Add(new Mexican());
             _graph = new GameGraph(_players);
+            _paint = paint;
             Start();
-            //being too 
+            _paint(_graph.ToString());           
+        }
+
+        async public Task Play()
+        {
             try
             {
                 bool winner = false;
                 while (!winner)
                 {
                     winner = Circle().Play(_graph);
+                    _paint(_graph.ToString());
+                    await Task.Delay(300);
                 }
-                _result += _player.Current.Name() + " Wins";
+                Global.Logger.Comment(_player.Current.Name() + " Wins");
             }
             catch
             {
-                _result += "Out of tiles!\n";
+                Global.Logger.Comment("Out of tiles!");
             }
-            _result += _graph.ToString();
+            finally
+            {
+                _paint(_graph.ToString());
+            }
         }
-
-        public string Result()
-        {
-            return _result;
-        }
+       
 
         void Start()
         {
@@ -53,11 +59,14 @@ namespace Dominoes
                 while (_player.MoveNext()) 
                 {
                     if (_player.Current.Start(startValue, _graph))
-                        return;                    
+                    {
+                        _paint(_graph.ToString());
+                        return;
+                    }
                 } 
             }
 
-            //nobody had a double.
+            Global.Logger.Comment("Drawing since noone had a double");
             foreach (var p in _players) p.Draw();
 
             //Try again;
@@ -66,8 +75,6 @@ namespace Dominoes
 
         public IPlayer Circle()
         {
-            //Assert we have some players?
-
             if (!_player.MoveNext())
             {
                 _player = _players.GetEnumerator();

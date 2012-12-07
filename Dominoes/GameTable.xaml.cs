@@ -26,13 +26,8 @@ namespace Dominoes
         {
             this.InitializeComponent();
             Global.Logger = new TextBlockLogger(Log);
-            Table.PointerPressed += Table_PointerPressed;
         }
 
-        void Table_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            Table.Text = new Game().Result();
-        }
 
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
@@ -41,9 +36,13 @@ namespace Dominoes
         /// property is typically used to configure the page.</param>
         async protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Table.Text = new Game().Result();
-            await Task.Delay(2000);
-            Table.Text = new Game().Result();
+            while (true)
+            {
+                var g = new Game(asciipaint => Table.Text = asciipaint);
+                await g.Play();
+                await Task.Delay(2000);
+            }
+            
         }
     }
 }
