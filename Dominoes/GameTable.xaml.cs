@@ -25,7 +25,7 @@ namespace Dominoes
         public GameTable()
         {
             this.InitializeComponent();
-            Global.Logger = new TextBlockLogger(Log);
+            Global.Logger = new TextBlockLogger(Log, ScrollLog);
         }
 
 

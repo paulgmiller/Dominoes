@@ -52,7 +52,6 @@ namespace Dominoes
 
         void Start()
         {
-
             for (int startValue = Domino.MAX_DOTS; startValue >= Domino.MIN_DOTS; --startValue)
             {
                 _player = _players.GetEnumerator();
@@ -81,9 +80,7 @@ namespace Dominoes
                 _player.MoveNext();
             }
             return _player.Current;
-        }
-
-        
+        }        
     }
 
 }
