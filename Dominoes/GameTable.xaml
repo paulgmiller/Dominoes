@@ -12,8 +12,9 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="120"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="Table" Grid.Row="0" FontFamily="Consolas" FontSize="20" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Dominoes" VerticalAlignment="Top" />
-        <ScrollViewer x:Name="ScrollLog"   HorizontalScrollBarVisibility="Auto" Height="Auto" Grid.Row="1">
+        <TextBox x:Name="Table" Grid.Row="0" FontFamily="Consolas" FontSize="20" HorizontalAlignment="Left" Margin="0,0,0,0" TextWrapping="Wrap" 
+                 VerticalAlignment="Top" Height="1500" Width="2500" Foreground="White" Background="Black" IsReadOnly="True"  BorderThickness="0"/>
+        <ScrollViewer x:Name="ScrollLog"   HorizontalScrollBarVisibility="Auto" Height="Auto" Grid.Row="1" Background="Black" Foreground="White">
             <TextBlock x:Name="Log"  FontFamily="Consolas" FontSize="20" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Log" VerticalAlignment="Top" />
         </ScrollViewer>
     </Grid>

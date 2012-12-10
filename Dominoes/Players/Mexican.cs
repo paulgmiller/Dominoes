@@ -18,14 +18,15 @@ namespace Dominoes.Players
             return Name();
         }
 
-        public bool IsOpen()
+        public bool Open 
         {
- 	        return true;
+            get { return true; }
         }
 
-        public bool Play(GameGraph game)
+        public async Task<bool> Play(GameGraph game)
         {
- 	        return false;
+ 	        //this is a really silly way to just say return false;
+            return await Task.Factory.StartNew(() => false);
         }
 
         public bool Start(int startValue, GameGraph game)

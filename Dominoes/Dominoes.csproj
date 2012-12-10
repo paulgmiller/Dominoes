@@ -114,6 +114,9 @@
     <Compile Include="GameGraph.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="IPlayer.cs" />
+    <Compile Include="Players\BasePlayer.cs" />
+    <Compile Include="Players\HumanPlayer.cs" />
+    <Compile Include="Players\Hand.cs" />
     <Compile Include="Players\Mexican.cs" />
     <Compile Include="Players\RobotStratedgies.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

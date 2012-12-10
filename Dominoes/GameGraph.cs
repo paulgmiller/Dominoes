@@ -87,7 +87,7 @@ namespace Dominoes
 
         public IEnumerable<Node> Ends(IPlayer player)
         {
-            var openlines = _lines.Where(l => l.Owner == player || l.Owner.IsOpen());
+            var openlines = _lines.Where(l => l.Owner == player || l.Owner.Open);
             return openlines.SelectMany(l => l.Ends());
         }
 

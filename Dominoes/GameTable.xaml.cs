@@ -26,8 +26,11 @@ namespace Dominoes
         {
             this.InitializeComponent();
             Global.Logger = new TextBlockLogger(Log, ScrollLog);
+            Table.KeyDown += GameTable_KeyDown;
+            
         }
 
+        private Game g;
 
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
@@ -36,13 +39,24 @@ namespace Dominoes
         /// property is typically used to configure the page.</param>
         async protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            Table.Focus(Windows.UI.Xaml.FocusState.Programmatic);
             while (true)
             {
-                var g = new Game(asciipaint => Table.Text = asciipaint);
+
+                g = new Game(asciipaint => Table.Text = asciipaint);
                 await g.Play();
                 await Task.Delay(2000);
             }
             
+        }
+
+        void GameTable_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            
+            if (g != null)
+            {
+                g.Input(e.Key);
+            }
         }
     }
 }

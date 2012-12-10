@@ -10,6 +10,7 @@ namespace Dominoes
     class Game
     {
         List<IPlayer> _players;
+        HumanPlayer _you;
         IEnumerator<IPlayer> _player;
         Tiles _tiles = new Tiles();
         GameGraph _graph;
@@ -18,12 +19,20 @@ namespace Dominoes
 
         public Game(Action<string> paint)
         {
+
+            _you = new HumanPlayer(_tiles);
             _players = new List<IPlayer> { new Fool(_tiles), new Moocher(_tiles), new Dumper(_tiles), new Boring(_tiles), new Fool(_tiles) };
             _players.Add(new Mexican());
+            _players.Add(_you);
             _graph = new GameGraph(_players);
             _paint = paint;
             Start();
-            _paint(_graph.ToString());           
+            _paint(Paint());           
+        }
+
+        private string Paint()
+        {
+            return _graph.ToString() + "\n\n" + _you.Paint();
         }
 
         async public Task Play()
@@ -33,22 +42,22 @@ namespace Dominoes
                 bool winner = false;
                 while (!winner)
                 {
-                    winner = Circle().Play(_graph);
-                    _paint(_graph.ToString());
-                    await Task.Delay(300);
+                   winner = await  Circle().Play(_graph);
+                    _paint(Paint());                    
                 }
                 Global.Logger.Comment(_player.Current.Name() + " Wins");
             }
-            catch
+            catch (OutOfTiles)
             {
                 Global.Logger.Comment("Out of tiles!");
             }
             finally
             {
-                _paint(_graph.ToString());
+                _paint(Paint());
             }
         }
        
+            
 
         void Start()
         {
@@ -59,7 +68,7 @@ namespace Dominoes
                 {
                     if (_player.Current.Start(startValue, _graph))
                     {
-                        _paint(_graph.ToString());
+                        _paint(Paint());
                         return;
                     }
                 } 
@@ -80,7 +89,9 @@ namespace Dominoes
                 _player.MoveNext();
             }
             return _player.Current;
-        }        
+        }
+
+        public void Input(Windows.System.VirtualKey keyPress) { _you.Input(keyPress); }
     }
 
 }

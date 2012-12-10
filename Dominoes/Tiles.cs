@@ -31,7 +31,8 @@ namespace Dominoes
 
         public Domino Next()
         {
-            if (_tiles.Count == 0) throw new OutOfTiles();
+            if (_tiles.Count == 0) 
+                throw new OutOfTiles();
             return _tiles.Dequeue();
         }
 
