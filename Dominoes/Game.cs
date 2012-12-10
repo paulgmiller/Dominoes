@@ -32,7 +32,7 @@ namespace Dominoes
 
         private string Paint()
         {
-            return _graph.ToString() + "\n\n" + _you.Paint();
+            return _graph.Paint(_you) + "\n\n" + _you.Paint();
         }
 
         async public Task Play()

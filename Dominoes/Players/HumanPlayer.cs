@@ -56,6 +56,8 @@ namespace Dominoes.Players
                     case VirtualKey.Number4: return 4;
                     case VirtualKey.Number5: return 5;
                     case VirtualKey.Number6: return 6;
+                    case VirtualKey.Number7: return 7;
+                    case VirtualKey.Number8: return 8;
                 }
             }
             
@@ -68,7 +70,7 @@ namespace Dominoes.Players
             if (! await AttemptToPlay(game))
             {
                 Draw();
-                if (!await AttemptToPlay(game) && !Open)
+                if (! await AttemptToPlay(game) && !Open)
                 {
                     Open = true;
                 }
@@ -90,7 +92,7 @@ namespace Dominoes.Players
                 }
 
                 Global.Logger.Comment(string.Format("You chose {0} end", end));
-                if (end >= ends.Count())
+                if (end > ends.Count())
                 {
                     Global.Logger.Comment("Invalid end");
                     continue;
@@ -98,13 +100,13 @@ namespace Dominoes.Players
                 
                 var domino = await AwaitKey();
                 Global.Logger.Comment(string.Format("You chose {0} domino", domino));
-                if (domino >= _hand.Count)
+                if (domino > _hand.Count)
                 {
                     Global.Logger.Comment("Invalid domino");
                     continue;
                 }
-                var d =_hand.ToArray()[domino.Value+1];
-                var e = ends[end.Value+1];
+                var d =_hand.ToArray()[domino.Value-1];
+                var e = ends[end.Value-1];
                 if (d.Matches(e.End))
                 {
                     e.AddChild(d);

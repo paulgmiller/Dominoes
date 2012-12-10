@@ -91,22 +91,32 @@ namespace Dominoes
             return openlines.SelectMany(l => l.Ends());
         }
 
-        public override string ToString()
+        public string Paint(IPlayer viewer)
         {
+            var open = Ends(viewer);
             var builder = new StringBuilder(); 
             builder.AppendLine(_root.ToString());
+            int openCount = 0;
             foreach (var line in _lines)
             {
                 builder.AppendFormat("{0,-7}", line.Owner);
                 if (line.Children.Any())
-                    PrintNode(line.Children.First(), builder, 1);
+                {
+                    openCount = PrintNode(line.Children.First(), builder, 1, openCount, open);
+                }
                 else
+                {
+                    if (open.Contains(line))
+                    {
+                        builder.Append(string.Format(" ({0})", ++openCount));
+                    }
                     builder.AppendLine();
+                }
             }
             return builder.ToString();
         }
 
-        private void PrintNode(Node node, StringBuilder sb, int indent)
+        private int PrintNode(Node node, StringBuilder sb, int indent, int openCount, IEnumerable<Node> open)
         {
             if (node.End == node.Value.Second)
                 sb.Append(node.Value);
@@ -115,15 +125,18 @@ namespace Dominoes
 
             if (!node.Children.Any())
             {
+                if (open.Contains(node))
+                   sb.Append(string.Format(" ({0})", ++openCount));
                 sb.AppendLine();
-                return;
+                return openCount;
             }
-            PrintNode(node.Children.First(), sb, indent+1);
+            openCount = PrintNode(node.Children.First(), sb, indent+1, openCount, open);
             foreach (var child in node.Children.Skip(1))
             {
                 foreach ( var i in Enumerable.Range(0,indent+1)) sb.Append("       ");
-                PrintNode(child, sb, indent + 2);
+                openCount =PrintNode(child, sb, indent + 2, openCount, open);
             }
+            return openCount;
         }
 
         public  void Add(Node end, Domino d, IPlayer player)
