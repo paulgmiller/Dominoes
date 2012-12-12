@@ -136,6 +136,14 @@ namespace Dominoes
                 foreach ( var i in Enumerable.Range(0,indent+1)) sb.Append("       ");
                 openCount =PrintNode(child, sb, indent + 2, openCount, open);
             }
+            //refactor this and the if statement above together.
+            if (node.Available > 0 && node.Children.Any() && open.Contains(node))
+            {
+                foreach (var i in Enumerable.Range(0, indent )) sb.Append("       ");
+                sb.AppendLine(string.Format(" ({0})", ++openCount));
+            }
+
+            
             return openCount;
         }
 

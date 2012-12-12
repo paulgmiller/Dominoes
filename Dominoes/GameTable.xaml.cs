@@ -27,6 +27,7 @@ namespace Dominoes
             this.InitializeComponent();
             Global.Logger = new TextBlockLogger(Log, ScrollLog);
             Table.KeyDown += GameTable_KeyDown;
+            Log.KeyDown += GameTable_KeyDown;
             
         }
 
@@ -52,7 +53,6 @@ namespace Dominoes
 
         void GameTable_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            
             if (g != null)
             {
                 g.Input(e.Key);

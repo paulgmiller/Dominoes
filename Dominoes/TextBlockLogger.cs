@@ -24,7 +24,8 @@ namespace Dominoes
         {
             _block.Text += "\n";            
             _block.Text += statement;
-            _scroll.ScrollToVerticalOffset(_block.ActualHeight);
+            //why o why can't I use scrollToBottom
+            _scroll.ScrollToVerticalOffset(_block.ActualHeight+80);
         }
 
         public void Debug(string statement)

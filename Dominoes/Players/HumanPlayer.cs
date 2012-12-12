@@ -45,7 +45,6 @@ namespace Dominoes.Players
             {
                 keyWaiter = new TaskCompletionSource<VirtualKey>();
                 var key = await keyWaiter.Task;
-                
                 switch (key)
                 {
                     case VirtualKey.Enter: return null;
@@ -70,6 +69,8 @@ namespace Dominoes.Players
             if (! await AttemptToPlay(game))
             {
                 Draw();
+                //should paint your hand how do we tell game to do that.
+                await Task.Delay(300);
                 if (! await AttemptToPlay(game) && !Open)
                 {
                     Open = true;
