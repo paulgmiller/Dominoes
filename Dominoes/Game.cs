@@ -20,8 +20,7 @@ namespace Dominoes
         static Game _singleton = null;
         public static Game NewGame(Action<string> paint)
         {
-            if (_singleton==null)
-                _singleton = new Game(paint);
+           _singleton = new Game(paint);
             return _singleton;
         }
 
