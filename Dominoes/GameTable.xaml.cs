@@ -43,7 +43,8 @@ namespace Dominoes
             while (true)
             {
                 await Game.Instance().Play();
-                await Task.Delay(2000);
+                await Task.Delay(10000);
+                Game.NewGame(asciipaint => Table.Text = asciipaint);
             }
             
         }

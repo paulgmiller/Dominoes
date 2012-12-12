@@ -109,10 +109,16 @@ namespace Dominoes.Players
                 }
                 var d =_hand.ToArray()[domino.Value-1];
                 var e = ends[end.Value-1];
+                
                 if (d.Matches(e.End))
                 {
                     e.AddChild(d);
                     _hand.Remove(d);
+                    if (e.Owner == this)
+                    {
+                        Open = false;
+                    }
+
                     Global.Logger.Comment(string.Format("{0} played {1} on {2}'s line and has {3} left", Name(), d, e.Owner, _hand.Count));
                     return true;
                 }
