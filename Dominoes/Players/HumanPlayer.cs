@@ -48,7 +48,7 @@ namespace Dominoes.Players
                 switch (key)
                 {
                     case VirtualKey.Enter: return null;
-                    case VirtualKey.Number0: return 0;
+                    case VirtualKey.Number0: return 10;
                     case VirtualKey.Number1: return 1;
                     case VirtualKey.Number2: return 2;
                     case VirtualKey.Number3: return 3;
@@ -57,6 +57,7 @@ namespace Dominoes.Players
                     case VirtualKey.Number6: return 6;
                     case VirtualKey.Number7: return 7;
                     case VirtualKey.Number8: return 8;
+                    case VirtualKey.Number9: return 9;
                 }
             }
             
