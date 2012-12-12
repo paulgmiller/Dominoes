@@ -26,12 +26,10 @@ namespace Dominoes
         {
             this.InitializeComponent();
             Global.Logger = new TextBlockLogger(Log, ScrollLog);
+            Game.NewGame(asciipaint => Table.Text = asciipaint);
             Table.KeyDown += GameTable_KeyDown;
             Log.KeyDown += GameTable_KeyDown;
-            
         }
-
-        private Game g;
 
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
@@ -41,11 +39,10 @@ namespace Dominoes
         async protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Table.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+           
             while (true)
             {
-
-                g = new Game(asciipaint => Table.Text = asciipaint);
-                await g.Play();
+                await Game.Instance().Play();
                 await Task.Delay(2000);
             }
             
@@ -53,10 +50,7 @@ namespace Dominoes
 
         void GameTable_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            if (g != null)
-            {
-                g.Input(e.Key);
-            }
+            Game.Instance().Input(e.Key);
         }
     }
 }

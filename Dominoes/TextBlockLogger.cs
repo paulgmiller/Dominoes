@@ -22,10 +22,9 @@ namespace Dominoes
 
         public void Comment(string statement)
         {
-            _block.Text += "\n";            
-            _block.Text += statement;
+            _block.Text = statement + "\n" + _block.Text;
             //why o why can't I use scrollToBottom
-            _scroll.ScrollToVerticalOffset(_block.ActualHeight+80);
+            _scroll.ScrollToVerticalOffset(0);
         }
 
         public void Debug(string statement)

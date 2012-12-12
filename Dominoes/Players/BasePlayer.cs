@@ -33,7 +33,7 @@ namespace Dominoes.Players
         public void Draw()
         {
             var domino = _tiles.Next();
-            Global.Logger.Comment(string.Format("{0} drew a {1}", Name(), domino));
+            Global.Logger.Debug(string.Format("{0} drew a {1}", Name(), domino));
             _hand.Add(domino);
         }
 

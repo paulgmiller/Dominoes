@@ -15,9 +15,26 @@ namespace Dominoes
         Tiles _tiles = new Tiles();
         GameGraph _graph;
         string _result;
-        Action<string> _paint; 
+        Action<string> _paint;
 
-        public Game(Action<string> paint)
+        static Game _singleton = null;
+        public static Game NewGame(Action<string> paint)
+        {
+            if (_singleton==null)
+                _singleton = new Game(paint);
+            return _singleton;
+        }
+
+        public static Game Instance()
+        {
+            if (_singleton == null)
+            {
+                throw new NullReferenceException();
+            }
+            return _singleton;
+        }
+
+        private  Game(Action<string> paint)
         {
 
             _you = new HumanPlayer(_tiles);
@@ -27,12 +44,12 @@ namespace Dominoes
             _graph = new GameGraph(_players);
             _paint = paint;
             Start();
-            _paint(Paint());           
+            Paint();           
         }
 
-        private string Paint()
+        public void  Paint()
         {
-            return _graph.Paint(_you) + "\n\n" + _you.Paint();
+            _paint(_graph.Paint(_you) + "\n\n" + _you.Paint());
         }
 
         async public Task Play()
@@ -43,7 +60,7 @@ namespace Dominoes
                 while (!winner)
                 {
                    winner = await  Circle().Play(_graph);
-                    _paint(Paint());                    
+                   Paint();                       
                 }
                 Global.Logger.Comment(_player.Current.Name() + " Wins");
             }
@@ -53,7 +70,7 @@ namespace Dominoes
             }
             finally
             {
-                _paint(Paint());
+                Paint();   
             }
         }
        
@@ -68,7 +85,7 @@ namespace Dominoes
                 {
                     if (_player.Current.Start(startValue, _graph))
                     {
-                        _paint(Paint());
+                        Paint();   
                         return;
                     }
                 } 
