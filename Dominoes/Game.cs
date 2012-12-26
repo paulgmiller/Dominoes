@@ -3,18 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
+
+
 using Dominoes.Players;
 
 namespace Dominoes
 {
+    [DataContract(Name="Game",Namespace="Dominoes")]
     class Game
     {
         List<IPlayer> _players;
         HumanPlayer _you;
         IEnumerator<IPlayer> _player;
+        
+        [DataMember]
         Tiles _tiles = new Tiles();
+        [DataMember]
         GameGraph _graph;
-        string _result;
+        
         Action<string> _paint;
 
         static Game _singleton = null;
@@ -107,7 +114,9 @@ namespace Dominoes
             return _player.Current;
         }
 
-        public void Input(Windows.System.VirtualKey keyPress) { _you.Input(keyPress); }
+        public void Input(Windows.System.VirtualKey keyPress) { 
+            _you.Input(keyPress);
+        }
     }
 
 }

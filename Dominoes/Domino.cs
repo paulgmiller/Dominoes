@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Dominoes
 {
+    [DataContract(Name = "Domino", Namespace = "Dominoes")]
     public class Domino : IComparable<Domino>
     {
+        [DataMember()]
         public int First { get; private set; }
+        [DataMember()]
         public int Second { get; private set; }
+
         public readonly static int MAX_DOTS = 12; 
         public readonly static int MIN_DOTS = 0;
 

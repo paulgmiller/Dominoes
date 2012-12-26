@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Dominoes
 {
+    [DataContract(Name = "Domino", Namespace = "Dominoes")]
     public class Node
     {
         private Node(Domino v, Node parent)
         {
              Value  = v;
-             Available  = Value.IsDouble() ? 3 : 1;
              Children = new List<Node>();
              if (parent.End == Value.First)
                  End = Value.Second;
@@ -30,15 +31,30 @@ namespace Dominoes
                 throw new ArgumentException("Must start game graph with double");
             
              Value  = v;
-             Available  = 1;
              Children = new List<Node>();
              End = Value.First;
              Owner = owner;
         }
-        public int Available { get; private set; }
+        
+        public int Available { 
+            get {
+                return (Value.IsDouble() ? 3 : 1) - Children.Count;        
+            }
+        }
+
+        [DataMember]
         public Domino Value { get; private set; }
+        
+        //if we want to save on storage size could generate this at deserialization. 
+        [DataMember]
         public int End { get; private set; }
+
+        [DataMember]
         public List<Node> Children { get; private  set; }
+        
+        //this should really be a reference or get it from the parent.
+        //or we get rid of this a redundant
+        //[DataMember]
         public IPlayer Owner { get; private set; }
 
         public void AddChild(Domino child)
@@ -46,7 +62,6 @@ namespace Dominoes
            if (Available <= 0) 
                throw new InvalidOperationException("No open plays on this domino:" + Value.ToString());
            Children.Add(new Node(child, this));
-           --Available;
         }
 
         public IEnumerable<Node> Ends()
@@ -60,11 +75,13 @@ namespace Dominoes
         }
     }
 
-    
 
+    [DataContract(Name = "GameGraph", Namespace = "Dominoes")]
     public class GameGraph
     {
+        [DataMember()]
         private Domino _root = null;
+        [DataMember]
         private List<Node> _lines;
         private IEnumerable<IPlayer> _players;
 

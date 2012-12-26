@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Dominoes
 {
 
     public class OutOfTiles : Exception { }
 
+    [DataContract(Name = "Tiles", Namespace = "Dominoes")]
     public class Tiles
     {
+        [DataMember()]
         private Queue<Domino> _tiles;
+
         private static readonly Random rnd = new Random();
 
         public Tiles()

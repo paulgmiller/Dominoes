@@ -31,7 +31,10 @@ namespace Dominoes
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            this.Resuming += App_Resuming;
         }
+
+       
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -83,8 +86,14 @@ namespace Dominoes
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
+            
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+
+        void App_Resuming(object sender, object e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

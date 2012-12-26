@@ -12,6 +12,11 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.IO;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -49,9 +54,30 @@ namespace Dominoes
             
         }
 
-        void GameTable_KeyDown(object sender, KeyRoutedEventArgs e)
+        async void GameTable_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             Game.Instance().Input(e.Key);
+            
+            //make this a member
+            var ser = new DataContractJsonSerializer(typeof(Game));
+
+            if (e.Key == Windows.System.VirtualKey.S)
+            {
+                var localFolder = ApplicationData.Current.LocalFolder;
+                //wipe the file?
+
+                var file = await localFolder.CreateFileAsync("dominoes.json", CreationCollisionOption.ReplaceExisting);
+                var foo = file.OpenStreamForWriteAsync();
+                ser.WriteObject(foo.Result, Game.Instance());
+                Global.Logger.Comment("Saved game to " + file.Path);
+            }
+            if (e.Key == Windows.System.VirtualKey.L)
+            {
+                var localFolder = ApplicationData.Current.LocalFolder;
+                var file = await localFolder.GetFileAsync("dominoes.json");
+                var newGame = ser.ReadObject(file.OpenStreamForReadAsync().Result) as Game;
+                Global.Logger.Comment("Loaded game from  " + file.Path);
+            }
         }
     }
 }
