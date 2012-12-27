@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
-
+using System.Runtime.Serialization.Json;
 
 using Dominoes.Players;
 
@@ -29,13 +29,27 @@ namespace Dominoes
         [DataMember]
         GameGraph _graph;
         
-        Action<string> _paint;
+
+        //should this be a delegate? oh well should go away when we get a real ui.
+        public Action<string> Painter { get; private set; }
 
         static Game _singleton = null;
         public static Game NewGame(Action<string> paint)
         {
            _singleton = new Game(paint);
             return _singleton;
+        }
+        static DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Game));
+        public static Game Load(System.IO.Stream stream, Action<string> paint)
+        {
+            _singleton = serializer.ReadObject(stream) as Game;
+            _singleton.Painter = paint;
+            return _singleton;
+        }
+
+        public static void Save(System.IO.Stream stream)
+        {
+            serializer.WriteObject(stream, Game.Instance());
         }
 
         public static Game Instance()
@@ -55,7 +69,7 @@ namespace Dominoes
             _players.Add(new Mexican());
             _players.Add(_you);
             _graph = new GameGraph(_players);
-            _paint = paint;
+            Painter = paint;
             Start();
             Paint();
             _id = Guid.NewGuid();
@@ -66,9 +80,9 @@ namespace Dominoes
             return RobotPlayer.Types().Concat(RobotStratedies.Types()).Concat(new [] { typeof(HumanPlayer), typeof(Mexican) } );
         }
 
-        public void  Paint()
+        public void Paint()
         {
-            _paint(_graph.Paint(_you) + "\n\n" + _you.Paint());
+            Painter(_graph.Paint(_you) + "\n\n" + _you.Paint());
         }
 
         async public Task Play()

@@ -13,8 +13,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.IO;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
@@ -58,24 +56,20 @@ namespace Dominoes
         {
             Game.Instance().Input(e.Key);
             
-            //make this a member
-            var ser = new DataContractJsonSerializer(typeof(Game));
-
             if (e.Key == Windows.System.VirtualKey.S)
             {
                 var localFolder = ApplicationData.Current.LocalFolder;
                 //wipe the file?
 
                 var file = await localFolder.CreateFileAsync("dominoes.json", CreationCollisionOption.ReplaceExisting);
-                var foo = file.OpenStreamForWriteAsync();
-                ser.WriteObject(foo.Result, Game.Instance());
+                Game.Save(file.OpenStreamForWriteAsync().Result);
                 Global.Logger.Comment("Saved game to " + file.Path);
             }
             if (e.Key == Windows.System.VirtualKey.L)
             {
                 var localFolder = ApplicationData.Current.LocalFolder;
                 var file = await localFolder.GetFileAsync("dominoes.json");
-                var newGame = ser.ReadObject(file.OpenStreamForReadAsync().Result) as Game;
+                Game.Load(file.OpenStreamForReadAsync().Result, asciipaint => Table.Text = asciipaint);
                 Global.Logger.Comment("Loaded game from  " + file.Path);
             }
         }
