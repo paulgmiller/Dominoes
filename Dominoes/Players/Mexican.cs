@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Dominoes.Players
 {
+    [DataContract]
     class Mexican : IPlayer
     {
         public string Name()
@@ -23,7 +25,7 @@ namespace Dominoes.Players
             get { return true; }
         }
 
-        public async Task<bool> Play(GameGraph game)
+        public async Task<bool> Play(GameGraph game, Tiles tiles)
         {
  	        //this is a really silly way to just say return false;
             return await Task.Factory.StartNew(() => false);
@@ -34,6 +36,6 @@ namespace Dominoes.Players
             return false;
         }
 
-        public void Draw()  {}
+        public void Draw(Tiles t)  {}
     }
 }

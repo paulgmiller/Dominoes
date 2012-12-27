@@ -13,8 +13,9 @@ namespace Dominoes
     [DataContract(Name = "Tiles", Namespace = "Dominoes")]
     public class Tiles
     {
+        //this should just be a queue but a queue serializes very stragely so we're simplifying to list.
         [DataMember()]
-        private Queue<Domino> _tiles;
+        private List<Domino> _tiles;
 
         private static readonly Random rnd = new Random();
 
@@ -23,7 +24,7 @@ namespace Dominoes
             var dotrange = Enumerable.Range(Domino.MIN_DOTS, Domino.MAX_DOTS+1);
             var initial = dotrange.SelectMany(f => Enumerable.Range(Domino.MIN_DOTS, f+1).Select(s => new Domino(f, s)));
             var shuffled = initial.OrderBy(d => rnd.Next());
-            _tiles = new Queue<Domino>(shuffled);
+            _tiles = new List<Domino>(shuffled);
             Global.Logger.Debug(string.Format("Shuffled {0} dominoes", _tiles.Count));
             
         }
@@ -37,7 +38,9 @@ namespace Dominoes
         {
             if (_tiles.Count == 0) 
                 throw new OutOfTiles();
-            return _tiles.Dequeue();
+            var tile = _tiles.First();
+            _tiles.RemoveAt(0);
+            return tile;
         }
 
     }

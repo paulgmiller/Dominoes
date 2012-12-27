@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Dominoes.Players
 {
+    [DataContract]
     public class RobotPlayer : BasePlayer
     {
+        [DataMember]
         private string _name;
+        [DataMember]
         protected IRobotStratedgy _strat;
 
         
@@ -24,12 +28,12 @@ namespace Dominoes.Players
         }
 
 
-        public override async Task<bool> Play(GameGraph game)
+        public override async Task<bool> Play(GameGraph game, Tiles tiles)
         {
             await Task.Delay(300);
             if (!LookFormatch(game))
             {
-                Draw();
+                Draw(tiles);
                 if (!LookFormatch(game)&& !Open)
                 {
                     Global.Logger.Comment(string.Format("{0}'s line opened", Name()));
@@ -57,8 +61,15 @@ namespace Dominoes.Players
             }                        
             return false;
         }
+
+        public static IEnumerable<Type> Types()
+        {
+            return new Type[] { typeof(Moocher), typeof(Boring), typeof(Fool), typeof(Dumper) };
+        }
     }
 
+
+    [DataContract]
     public class Moocher : RobotPlayer
     {
         public Moocher(Tiles t) : base(t, null, "Mooch") 
@@ -67,6 +78,7 @@ namespace Dominoes.Players
         }
     }
 
+    [DataContract]
     public class Boring : RobotPlayer
     {
         private static string[] _names = new[] { "fred", "wilma", "barney", "betty", "ted", "robert", "fanny" };
@@ -78,12 +90,13 @@ namespace Dominoes.Players
         public Boring(Tiles t ) : base(t, new FirstTileStratedgy(), GenerateName()) { }
     }
 
+    [DataContract]
     public class Fool : RobotPlayer
     {
         public Fool(Tiles t): base (t, new Dumbness(new FirstTileStratedgy(), 10), "Pinky") {}
     }
 
-
+    [DataContract]
     public class Dumper : RobotPlayer
     {
         public Dumper(Tiles t) : base(t, new BiggestTileStatedgy(), "Denny") { }

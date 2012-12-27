@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Dominoes.Players
 {
@@ -19,15 +20,28 @@ namespace Dominoes.Players
         }
     }
 
+    public class RobotStratedies
+    {
+        //this seems error prone how do we autoenumerate types in here?
+        public static IEnumerable<Type> Types()
+        {
+            return new Type[] { typeof(Dumbness),typeof(FirstTileStratedgy), typeof(BiggestTileStatedgy), typeof(MoocherStratedgy) };
+        }
+    }
+
+
     public interface IRobotStratedgy
     {
         Match Choose(Hand hand, IEnumerable<Node> ends);
     }
 
+    [DataContract]
     public class Dumbness : IRobotStratedgy
     {
         private static Random _rnd = new Random();
+        [DataMember]
         private int _missPercent;
+        [DataMember]
         private IRobotStratedgy _underlying;
         public Dumbness(IRobotStratedgy underlying, int misspercent)
         {
@@ -48,6 +62,7 @@ namespace Dominoes.Players
 
     
     //just take the first match you find
+    [DataContract]
     public class FirstTileStratedgy  : IRobotStratedgy
     {
         public Match Choose(Hand hand, IEnumerable<Node> ends)
@@ -57,6 +72,7 @@ namespace Dominoes.Players
     }
 
     //Play the biggest match you have
+    [DataContract]
     public class BiggestTileStatedgy : IRobotStratedgy
     {
         public Match Choose(Hand hand, IEnumerable<Node> ends)
@@ -68,6 +84,7 @@ namespace Dominoes.Players
     }
 
     //Always plays other peoples lines then his biggest.
+    [DataContract]
     public class MoocherStratedgy : IRobotStratedgy
     {
         private IPlayer _player;
@@ -84,7 +101,9 @@ namespace Dominoes.Players
     }
 
     //This is actually my personal strategy. Use your hand to construct the longest line(s) on your end(s). Play tiles not on these lines first then play them in order.
-    /*public class KingOFFools : IRobotStratedgy
+    /*
+     [DataContract]
+    public class KingOFFools : IRobotStratedgy
     {
         private IPlayer _player;
         public MoocherStratedgy(IPlayer p)

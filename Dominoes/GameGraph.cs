@@ -42,7 +42,6 @@ namespace Dominoes
             }
         }
 
-        [DataMember]
         public Domino Value { get; private set; }
         
         //if we want to save on storage size could generate this at deserialization. 

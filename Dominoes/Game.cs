@@ -10,10 +10,17 @@ using Dominoes.Players;
 
 namespace Dominoes
 {
+    //this is dumb and buggy. Should either know all the types in Domones.Players or call something that declares them all known
+    [KnownType("KnownTypes")]
     [DataContract(Name="Game",Namespace="Dominoes")]
     class Game
     {
+        [DataMember]
+        Guid _id;
+        [DataMember]
         List<IPlayer> _players;
+        
+        //should both of these just be unique names to look up players
         HumanPlayer _you;
         IEnumerator<IPlayer> _player;
         
@@ -50,7 +57,13 @@ namespace Dominoes
             _graph = new GameGraph(_players);
             _paint = paint;
             Start();
-            Paint();           
+            Paint();
+            _id = Guid.NewGuid();
+        }
+
+        public static IEnumerable<Type> KnownTypes()
+        {
+            return RobotPlayer.Types().Concat(RobotStratedies.Types()).Concat(new [] { typeof(HumanPlayer), typeof(Mexican) } );
         }
 
         public void  Paint()
@@ -65,7 +78,7 @@ namespace Dominoes
                 bool winner = false;
                 while (!winner)
                 {
-                   winner = await  Circle().Play(_graph);
+                   winner = await  Circle().Play(_graph, _tiles);
                    Paint();                       
                 }
                 Global.Logger.Comment(_player.Current.Name() + " Wins");
@@ -98,7 +111,7 @@ namespace Dominoes
             }
 
             Global.Logger.Comment("Drawing since noone had a double");
-            foreach (var p in _players) p.Draw();
+            foreach (var p in _players) p.Draw(_tiles);
 
             //Try again;
             Start();

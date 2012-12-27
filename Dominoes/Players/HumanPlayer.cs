@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.System;
+using System.Runtime.Serialization;
 
 namespace Dominoes.Players
 {
+    [DataContract]
     class HumanPlayer : BasePlayer
     {
 
@@ -15,6 +17,8 @@ namespace Dominoes.Players
         public HumanPlayer(Tiles t) : base(t)
         {
         }
+
+        //todo some unique microsoft id to differentiate human players
 
         public override string Name()
         {
@@ -65,11 +69,11 @@ namespace Dominoes.Players
         }
 
         //Almost identical to robot player except for where the await happens
-        public override async Task<bool> Play(GameGraph game)
+        public override async Task<bool> Play(GameGraph game, Tiles tiles)
         {
             if (! await AttemptToPlay(game))
             {
-                Draw();
+                Draw(tiles);
                 Game.Instance().Paint();
                 await Task.Delay(300);
                 if (! await AttemptToPlay(game) && !Open)

@@ -10,18 +10,22 @@ namespace Dominoes
     [DataContract(Name = "Domino", Namespace = "Dominoes")]
     public class Domino : IComparable<Domino>
     {
-        [DataMember()]
-        public int First { get; private set; }
-        [DataMember()]
-        public int Second { get; private set; }
+        
+        public int First { get { return values[0]; } }
+        public int Second { get { return values[1]; } }
+        
+        //idealluy this is just serialized as n|m but even if we implement iserialable that seems hard to do. 
+        //Could have Tiles, Hand, and node all do it manually but that seems dumb.
+        [DataMember(Name="v")]
+        private int[] values;
 
         public readonly static int MAX_DOTS = 12; 
         public readonly static int MIN_DOTS = 0;
 
         public Domino(int one, int two)
         {
-            First = one;
-            Second = two;
+            values = new int[] { one, two };
+            
 
             if (First > MAX_DOTS || First < 0)
                 throw new ArgumentOutOfRangeException(string.Format("first isn't a valid domino: {0}", First));
