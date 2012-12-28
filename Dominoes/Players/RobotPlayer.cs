@@ -52,7 +52,7 @@ namespace Dominoes.Players
                 game.Add(pick.end, pick.domino, this);
                 _hand.Remove(pick.domino);
                 Global.Logger.Comment(string.Format("{0} played {1} on {2}'s line and has {3} left", Name(), pick.domino, pick.end.Owner, _hand.Count));
-                if (Open && pick.end.Owner == this)
+                if (Open && pick.end.Owner.Equals(this.Name()))
                 {
                     Global.Logger.Comment(string.Format("{0}'s line closed", Name()));
                     Open = false;
@@ -74,7 +74,7 @@ namespace Dominoes.Players
     {
         public Moocher(Tiles t) : base(t, null, "Mooch") 
         {
-            _strat = new MoocherStratedgy(this);
+            _strat = new MoocherStratedgy(Name());
         }
     }
 

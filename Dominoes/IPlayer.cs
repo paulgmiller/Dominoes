@@ -9,6 +9,7 @@ namespace Dominoes
 {
     public interface IPlayer
     {
+        //todo either name should be always unique or we should have a seperate id field.
         string Name();
         bool Open {  get; }
         Task<bool> Play(GameGraph game, Tiles tiles);

@@ -20,9 +20,22 @@ namespace Dominoes
         [DataMember]
         List<IPlayer> _players;
         
-        //should both of these just be unique names to look up players
-        HumanPlayer _you;
+        HumanPlayer _you { get { return _players.Single(prop => prop.Name().Equals(_youID)) as HumanPlayer; } }
+        [DataMember]
+        string _youID;
+
+
         IEnumerator<IPlayer> _player;
+        [DataMember]
+        string _currentPlayer;
+        private void AdvanceToCurrent()
+        {
+            var target = _currentPlayer; //save this 
+            do {
+                Circle();
+            } while (!_currentPlayer.Equals(target));
+        }
+
         
         [DataMember]
         Tiles _tiles = new Tiles();
@@ -42,8 +55,18 @@ namespace Dominoes
         static DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Game));
         public static Game Load(System.IO.Stream stream, Action<string> paint)
         {
+            var old = _singleton;
             _singleton = serializer.ReadObject(stream) as Game;
+            //not supper happy about these but hard to serialize wihtout a bunch of redundancy.
             _singleton.Painter = paint;
+            _singleton.AdvanceToCurrent();
+            _singleton._graph.Players = _singleton._players;
+            
+            //need better way to end old game.
+            old.Kill();
+
+            _singleton.Paint();
+
             return _singleton;
         }
 
@@ -63,16 +86,23 @@ namespace Dominoes
 
         private  Game(Action<string> paint)
         {
-
-            _you = new HumanPlayer(_tiles);
-            _players = new List<IPlayer> { new Fool(_tiles), new Moocher(_tiles), new Dumper(_tiles), new Boring(_tiles), new Fool(_tiles) };
+            var you = new HumanPlayer(_tiles);
+            _players = new List<IPlayer> { new Fool(_tiles), new Moocher(_tiles), new Dumper(_tiles), new Boring(_tiles), new Boring(_tiles) };
             _players.Add(new Mexican());
-            _players.Add(_you);
+            _players.Add(you);
+            _youID = you.Name();
             _graph = new GameGraph(_players);
             Painter = paint;
             Start();
             Paint();
             _id = Guid.NewGuid();
+        }
+
+        private bool _kill = false;
+        public void Kill()
+        {
+            _kill = true;
+            _you.Kill();
         }
 
         public static IEnumerable<Type> KnownTypes()
@@ -85,26 +115,26 @@ namespace Dominoes
             Painter(_graph.Paint(_you) + "\n\n" + _you.Paint());
         }
 
-        async public Task Play()
+        async public Task<bool> Play()
         {
             try
             {
                 bool winner = false;
-                while (!winner)
+                while (!winner && !_kill)
                 {
-                   winner = await  Circle().Play(_graph, _tiles);
+                   winner = await _player.Current.Play(_graph, _tiles);
+                   Circle();
                    Paint();                       
                 }
-                Global.Logger.Comment(_player.Current.Name() + " Wins");
+                if (winner)
+                    Global.Logger.Comment(_player.Current.Name() + " Wins");
             }
             catch (OutOfTiles)
             {
                 Global.Logger.Comment("Out of tiles!");
-            }
-            finally
-            {
                 Paint();   
             }
+            return _kill;            
         }
        
             
@@ -118,13 +148,14 @@ namespace Dominoes
                 {
                     if (_player.Current.Start(startValue, _graph))
                     {
-                        Paint();   
+                        Circle(); //next player goes
+                        Paint();
                         return;
                     }
                 } 
             }
 
-            Global.Logger.Comment("Drawing since noone had a double");
+            Global.Logger.Comment("Drawing since no one had a double");
             foreach (var p in _players) p.Draw(_tiles);
 
             //Try again;
@@ -133,11 +164,17 @@ namespace Dominoes
 
         public IPlayer Circle()
         {
+            if (_player == null)
+            {
+                _player = _players.GetEnumerator();
+            }
+
             if (!_player.MoveNext())
             {
                 _player = _players.GetEnumerator();
                 _player.MoveNext();
             }
+            _currentPlayer = _player.Current.Name();
             return _player.Current;
         }
 

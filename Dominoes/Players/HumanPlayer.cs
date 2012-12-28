@@ -12,7 +12,7 @@ namespace Dominoes.Players
     class HumanPlayer : BasePlayer
     {
 
-        private TaskCompletionSource<VirtualKey> keyWaiter; 
+        private TaskCompletionSource<VirtualKey> keyWaiter;
 
         public HumanPlayer(Tiles t) : base(t)
         {
@@ -68,10 +68,20 @@ namespace Dominoes.Players
 
         }
 
+        private bool _kill = false;
+        public void Kill()
+        {
+            _kill = true;
+            if (keyWaiter != null)
+            {
+                keyWaiter.TrySetResult(VirtualKey.Enter);
+            }
+        }
+
         //Almost identical to robot player except for where the await happens
         public override async Task<bool> Play(GameGraph game, Tiles tiles)
         {
-            if (! await AttemptToPlay(game))
+            if (! await AttemptToPlay(game) && !_kill)
             {
                 Draw(tiles);
                 Game.Instance().Paint();
@@ -118,7 +128,7 @@ namespace Dominoes.Players
                 {
                     e.AddChild(d);
                     _hand.Remove(d);
-                    if (e.Owner == this)
+                    if (e.Owner == Name())
                     {
                         Open = false;
                     }

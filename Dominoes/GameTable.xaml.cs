@@ -42,12 +42,17 @@ namespace Dominoes
         async protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Table.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-           
+
             while (true)
             {
-                await Game.Instance().Play();
-                await Task.Delay(10000);
-                Game.NewGame(asciipaint => Table.Text = asciipaint);
+                var game = Game.Instance();
+                bool killed = await game.Play();
+                if (!killed)
+                {
+                    //should await a keypress instead of 10 seconds
+                    await Task.Delay(10000);
+                    Game.NewGame(asciipaint => Table.Text = asciipaint);
+                }
             }
             
         }

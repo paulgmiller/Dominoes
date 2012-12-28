@@ -87,16 +87,17 @@ namespace Dominoes.Players
     [DataContract]
     public class MoocherStratedgy : IRobotStratedgy
     {
-        private IPlayer _player;
-        public MoocherStratedgy(IPlayer p) 
+        [DataMember]
+        private string _playerToMooch;
+        public MoocherStratedgy(string player) 
         {
-            _player = p;
+            _playerToMooch = player;
         }
 
         public Match Choose(Hand hand, IEnumerable<Node> ends)
         {
             var matches = Match.Find(hand, ends);
-            return matches.OrderBy(m => m.end.Owner == _player ? 0 : 1 ).ThenByDescending(m => m.domino).FirstOrDefault();
+            return matches.OrderBy(m => m.end.Owner == _playerToMooch ? 0 : 1).ThenByDescending(m => m.domino).FirstOrDefault();
         }
     }
 

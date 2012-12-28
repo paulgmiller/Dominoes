@@ -25,7 +25,7 @@ namespace Dominoes
         }
 
         //should only be used to start lines.
-        internal  Node(Domino v, IPlayer owner)
+        internal  Node(Domino v, string owner)
         {
              if (!v.IsDouble())
                 throw new ArgumentException("Must start game graph with double");
@@ -42,6 +42,7 @@ namespace Dominoes
             }
         }
 
+        [DataMember]
         public Domino Value { get; private set; }
         
         //if we want to save on storage size could generate this at deserialization. 
@@ -50,12 +51,12 @@ namespace Dominoes
 
         [DataMember]
         public List<Node> Children { get; private  set; }
-        
-        //this should really be a reference or get it from the parent.
-        //or we get rid of this a redundant
-        //[DataMember]
-        public IPlayer Owner { get; private set; }
 
+        //would rather this just be a refernce but that doesn't serialize well.
+        [DataMember]
+        public string Owner { get; private set; }
+
+        
         public void AddChild(Domino child)
         {
            if (Available <= 0) 
@@ -82,11 +83,12 @@ namespace Dominoes
         private Domino _root = null;
         [DataMember]
         private List<Node> _lines;
-        private IEnumerable<IPlayer> _players;
+        //only really one game to set this.
+        public IEnumerable<IPlayer> Players { get; internal set; }
 
         public GameGraph(IEnumerable<IPlayer> players)
         {
-            _players = players;
+            Players = players;
         }
 
         public void Start(Domino starter)
@@ -98,12 +100,13 @@ namespace Dominoes
                 throw new InvalidOperationException("Graph already started");
 
             _root = starter;
-            _lines = _players.Select(p => new Node(starter, p )).ToList();
+            _lines = Players.Select(p => new Node(starter, p.Name())).ToList();
         }
 
         public IEnumerable<Node> Ends(IPlayer player)
         {
-            var openlines = _lines.Where(l => l.Owner == player || l.Owner.Open);
+            //boo using a global variable here.
+            var openlines = _lines.Where(l => l.Owner == player.Name() || Players.Single(p => p.Name().Equals(l.Owner)).Open);
             return openlines.SelectMany(l => l.Ends());
         }
 
