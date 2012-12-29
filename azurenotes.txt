@@ -1,0 +1,4 @@
+Some interesting notes on azure for rt.
+http://blogs.msdn.com/b/windowsazurestorage/archive/2012/11/05/windows-azure-storage-client-library-for-windows-runtime.aspx
+git hub seems to be the primary place.
+https://github.com/WindowsAzure/azure-sdk-for-net
