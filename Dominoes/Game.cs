@@ -13,10 +13,10 @@ namespace Dominoes
     //this is dumb and buggy. Should either know all the types in Domones.Players or call something that declares them all known
     [KnownType("KnownTypes")]
     [DataContract(Name="Game",Namespace="Dominoes")]
-    class Game
+    public class Game
     {
         [DataMember]
-        Guid _id;
+        public Guid Id { get; private set; }
         [DataMember]
         List<IPlayer> _players;
         
@@ -55,24 +55,26 @@ namespace Dominoes
         static DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Game));
         public static Game Load(System.IO.Stream stream, Action<string> paint)
         {
-            var old = _singleton;
-            _singleton = serializer.ReadObject(stream) as Game;
-            //not supper happy about these but hard to serialize wihtout a bunch of redundancy.
-            _singleton.Painter = paint;
-            _singleton.AdvanceToCurrent();
-            _singleton._graph.Players = _singleton._players;
             
-            //need better way to end old game.
-            old.Kill();
-
-            _singleton.Paint();
-
-            return _singleton;
+            var game = serializer.ReadObject(stream) as Game;
+            //not supper happy about these but hard to serialize wihtout a bunch of redundancy.
+            game.Painter = paint;
+            game.AdvanceToCurrent();
+            game._graph.Players = _singleton._players;
+            return game;
         }
 
-        public static void Save(System.IO.Stream stream)
+        public static void Swap(Game game)
         {
-            serializer.WriteObject(stream, Game.Instance());
+            var old = _singleton;
+            _singleton = game;
+            old.Kill();
+            _singleton.Paint();
+        }
+
+        public void Save(System.IO.Stream stream)
+        {
+            serializer.WriteObject(stream, this);
         }
 
         public static Game Instance()
@@ -95,7 +97,7 @@ namespace Dominoes
             Painter = paint;
             Start();
             Paint();
-            _id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         private bool _kill = false;
