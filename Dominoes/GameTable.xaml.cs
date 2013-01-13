@@ -28,8 +28,7 @@ namespace Dominoes
         public GameTable()
         {
             this.InitializeComponent();
-            Global.Logger = new TextBlockLogger(Log, ScrollLog);
-            Game.NewGame(asciipaint => Table.Text = asciipaint);
+            
             Table.KeyDown += GameTable_KeyDown;
             Log.KeyDown += GameTable_KeyDown;
         }
@@ -41,8 +40,10 @@ namespace Dominoes
         /// property is typically used to configure the page.</param>
         async protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Table.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+            Global.Logger = await TextBlockLogger.Create(Log, ScrollLog);
+            Game.NewGame(asciipaint => Table.Text = asciipaint);
 
+            Table.Focus(Windows.UI.Xaml.FocusState.Programmatic);
             while (true)
             {
                 var game = Game.Instance();
