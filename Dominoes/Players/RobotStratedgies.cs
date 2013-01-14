@@ -123,7 +123,7 @@ namespace Dominoes.Players
             }
           
             IEnumerable<Hand> chains = matches.SelectMany(m => FindChains(hand.Except( new[] { m.domino }), new Node(m.domino, m.end)));
-            var chain = chains.Max(); 
+            var chain = chains.OrderBy(h => h.Total).First(); 
             if (Game.Instance().GetPlayer(_me).Open)
             {
                 var excess = hand.Except(chain);
@@ -132,7 +132,7 @@ namespace Dominoes.Players
                     return new BiggestTileStatedgy().Choose(new Hand(excess), ends);
             }
 
-            return Match.Find(new[] { chain.First() }, ends).First();
+            return Match.Find(new[] { chain.First() }, ends).FirstOrDefault();
             
 
         }

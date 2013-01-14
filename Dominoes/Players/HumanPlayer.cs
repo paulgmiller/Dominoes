@@ -138,7 +138,7 @@ namespace Dominoes.Players
                 }
                 else
                 {
-                    Global.Logger.Comment(string.Format("domino {0} doesn't match end {1}", d, e.End));
+                    Global.Logger.Comment(string.Format("domino {0} doesn't match end {1}", d, e.Value));
                 }
             }            
         }
