@@ -36,6 +36,11 @@ namespace Dominoes
             } while (!_currentPlayer.Equals(target));
         }
 
+        public IPlayer GetPlayer(string name)
+        {
+            return _players.Find(p => p.Name().Equals(name));
+        }
+
         
         [DataMember]
         Tiles _tiles = new Tiles();
@@ -87,7 +92,7 @@ namespace Dominoes
         private  Game(Action<string> paint)
         {
             var you = new HumanPlayer(_tiles);
-            _players = new List<IPlayer> { new Fool(_tiles), new Moocher(_tiles), new Dumper(_tiles), new Boring(_tiles), new Boring(_tiles) };
+            _players = new List<IPlayer> { new Fool(_tiles), new Moocher(_tiles), new Dumper(_tiles), new Boring(_tiles), new KingOfFools(_tiles) };
             _players.Add(new Mexican());
             _players.Add(you);
             _youID = you.Name();

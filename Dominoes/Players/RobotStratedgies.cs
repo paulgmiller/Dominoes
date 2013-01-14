@@ -105,11 +105,11 @@ namespace Dominoes.Players
     //This is actually my personal strategy. Use your hand to construct the longest line(s) on your end(s). Play tiles not on these lines first then play them in order.
     
      [DataContract]
-    public class KingOFFools : IRobotStratedgy
+    public class KingOFFoolishness : IRobotStratedgy
     {
         [DataMember]
         private string _me;
-        public KingOFFools(string me)
+        public KingOFFoolishness(string me)
         {
             _me = me;
         }
@@ -123,10 +123,16 @@ namespace Dominoes.Players
             }
           
             IEnumerable<Hand> chains = matches.SelectMany(m => FindChains(hand.Except( new[] { m.domino }), new Node(m.domino, m.end)));
-            var chain = chains.Max();
-            //don't have a way to look up if I am open or not. 
-            //Want to plau others unless I am open.
-            return Match.Find(new[] { chain.First() }, ends).Single();
+            var chain = chains.Max(); 
+            if (Game.Instance().GetPlayer(_me).Open)
+            {
+                var excess = hand.Except(chain);
+                var notmine = Match.Find(excess, ends); //ends should except the one chain wants to use
+                if (notmine.Any())
+                    return new BiggestTileStatedgy().Choose(new Hand(excess), ends);
+            }
+
+            return Match.Find(new[] { chain.First() }, ends).First();
             
 
         }

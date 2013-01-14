@@ -101,4 +101,13 @@ namespace Dominoes.Players
     {
         public Dumper(Tiles t) : base(t, new BiggestTileStatedgy(), "Denny") { }
     }
+
+    [DataContract]
+    public class KingOfFools : RobotPlayer
+    {
+        public KingOfFools(Tiles t) : base(t, null, "King") 
+        { 
+            _strat = new KingOFFoolishness(Name());
+        }
+    }
 }
