@@ -97,25 +97,64 @@ namespace Dominoes.Players
         public Match Choose(Hand hand, IEnumerable<Node> ends)
         {
             var matches = Match.Find(hand, ends);
+            //duplicative of biggest tile stratedgy
             return matches.OrderBy(m => m.end.Owner == _playerToMooch ? 0 : 1).ThenByDescending(m => m.domino).FirstOrDefault();
         }
     }
 
     //This is actually my personal strategy. Use your hand to construct the longest line(s) on your end(s). Play tiles not on these lines first then play them in order.
-    /*
+    
      [DataContract]
-    public class KingOFFools : IRobotStratedgy
+    public class KingOFFoolishness : IRobotStratedgy
     {
-        private IPlayer _player;
-        public MoocherStratedgy(IPlayer p)
+        [DataMember]
+        private string _me;
+        public KingOFFoolishness(string me)
         {
-            _player = p;
+            _me = me;
         }
 
         public Match Choose(Hand hand, IEnumerable<Node> ends)
         {
-            var matches = Match.Find(hand, ends);
-            return matches.OrderBy(m => m.end.Owner == _player ? 0 : 1).ThenByDescending(m => m.domino).FirstOrDefault();
+            var matches = Match.Find(hand, ends.Where(e => e.Owner.Equals(_me)));
+            if (!matches.Any())
+            {
+                return new BiggestTileStatedgy().Choose(hand, ends);
+            }
+          
+            IEnumerable<Hand> chains = matches.SelectMany(m => FindChains(hand.Except( new[] { m.domino }), new Node(m.domino, m.end)));
+            var chain = chains.OrderBy(h => h.Total).First(); 
+            if (Game.Instance().GetPlayer(_me).Open)
+            {
+                var excess = hand.Except(chain);
+                if (Match.Find(excess, ends).Any())
+                    return new BiggestTileStatedgy().Choose(new Hand(excess), ends);
+            }
+
+            return Match.Find(new[] { chain.First() }, ends).FirstOrDefault();
+            
+
         }
-    }*/
+         
+         private IEnumerable<Hand> FindChains(IEnumerable<Domino> pool, Node chain)
+         {
+           
+             var matches = Match.Find(pool, chain.Ends()); 
+             if (!matches.Any())
+             {
+                 return new[] { new Hand(chain.Dominoes()) };
+             }
+             else
+             {
+                 return matches.SelectMany(m =>
+                 {
+                     m.end.AddChild(m.domino);
+                     var chains = FindChains(pool.Except(new[] { m.domino }), chain);
+                     m.end.RemoveChild(m.domino);
+                     return chains;
+                 });
+             }
+         }
+        
+    }
 }

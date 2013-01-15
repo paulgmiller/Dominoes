@@ -11,7 +11,7 @@ namespace Dominoes.Players
     public class Hand : List<Domino>
     {
         public Hand() { }
-        private Hand(IEnumerable<Domino> tiles) : base(tiles) { }
+        public Hand(IEnumerable<Domino> tiles) : base(tiles) { }
 
         public Hand Match(Node end)
         {
@@ -21,6 +21,14 @@ namespace Dominoes.Players
         public override string ToString()
         {
             return String.Join(" ", this.Select(d => d.ToString()));
+        }
+
+        public int Total
+        {
+            get
+            {
+                return this.Aggregate<Domino, int>(0, (score, d) => score + d.Score);
+            }
         }
     }
 }

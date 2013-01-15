@@ -8,9 +8,10 @@ using System.Runtime.Serialization;
 namespace Dominoes
 {
     [DataContract(Name = "Domino", Namespace = "Dominoes")]
-    public class Node
+    public class Node 
     {
-        private Node(Domino v, Node parent)
+        //used by King of fools otherwise it would be private.
+        internal Node(Domino v, Node parent)
         {
              Value  = v;
              Children = new List<Node>();
@@ -34,6 +35,11 @@ namespace Dominoes
              Children = new List<Node>();
              End = Value.First;
              Owner = owner;
+        }
+
+        public IEnumerable<Domino> Dominoes()
+        {
+            return new [] { Value }.Concat( Children.SelectMany( c => c.Dominoes()));
         }
         
         public int Available { 
@@ -62,6 +68,13 @@ namespace Dominoes
            if (Available <= 0) 
                throw new InvalidOperationException("No open plays on this domino:" + Value.ToString());
            Children.Add(new Node(child, this));
+        }
+
+        public void RemoveChild(Domino child)
+        {
+            var c = Children.Find(n => n.Value.Equals(child));
+            if (c == null) throw new ArgumentOutOfRangeException("child");
+            Children.Remove(c);
         }
 
         public IEnumerable<Node> Ends()
@@ -156,10 +169,14 @@ namespace Dominoes
                 openCount =PrintNode(child, sb, indent + 2, openCount, open);
             }
             //refactor this and the if statement above together.
-            if (node.Available > 0 && node.Children.Any() && open.Contains(node))
+            int remaining = node.Available - 1;
+            if (remaining > 0 && open.Contains(node))
             {
-                foreach (var i in Enumerable.Range(0, indent )) sb.Append("       ");
-                sb.AppendLine(string.Format(" ({0})", ++openCount));
+                foreach (int i in Enumerable.Range(0,remaining))
+                {
+                    foreach (var j in Enumerable.Range(0, indent)) sb.Append("       ");
+                    sb.AppendLine(string.Format(" ({0})", ++openCount));
+                }
             }
 
             
