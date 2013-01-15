@@ -127,8 +127,7 @@ namespace Dominoes.Players
             if (Game.Instance().GetPlayer(_me).Open)
             {
                 var excess = hand.Except(chain);
-                var notmine = Match.Find(excess, ends); //ends should except the one chain wants to use
-                if (notmine.Any())
+                if (Match.Find(excess, ends).Any())
                     return new BiggestTileStatedgy().Choose(new Hand(excess), ends);
             }
 
