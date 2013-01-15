@@ -103,6 +103,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AzureGameEntity.cs" />
     <Compile Include="GameTable.xaml.cs">
       <DependentUpon>GameTable.xaml</DependentUpon>
     </Compile>
