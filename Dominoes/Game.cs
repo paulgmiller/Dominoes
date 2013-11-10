@@ -19,6 +19,7 @@ namespace Dominoes
         public Guid Id { get; private set; }
         [DataMember]
         List<IPlayer> _players;
+
         
         HumanPlayer _you { get { return _players.Single(prop => prop.Name().Equals(_youID)) as HumanPlayer; } }
         [DataMember]
@@ -34,11 +35,6 @@ namespace Dominoes
             do {
                 Circle();
             } while (!_currentPlayer.Equals(target));
-        }
-
-        public IPlayer GetPlayer(string name)
-        {
-            return _players.Find(p => p.Name().Equals(name));
         }
 
         
@@ -94,8 +90,16 @@ namespace Dominoes
         private  Game(Action<string> paint)
         {
             var you = new HumanPlayer(_tiles);
-            _players = new List<IPlayer> { new Fool(_tiles), new Moocher(_tiles), new Dumper(_tiles), new Boring(_tiles), new KingOfFools(_tiles) };
-            _players.Add(new Mexican());
+            _players = new List<IPlayer> { 
+                    new Fool(_tiles), 
+                    new Moocher(_tiles), 
+                    new Dumper(_tiles), 
+                    new Boring(_tiles), 
+                    new Boring(_tiles), 
+                    new KingOfFools(_tiles),
+                    new Mexican(),
+                    you
+            };
             _players.Add(you);
             _youID = you.Name();
             _graph = new GameGraph(_players);
@@ -114,7 +118,7 @@ namespace Dominoes
 
         public static IEnumerable<Type> KnownTypes()
         {
-            return RobotPlayer.Types().Concat(RobotStratedies.Types()).Concat(new [] { typeof(HumanPlayer), typeof(Mexican) } );
+            return RobotPlayer.Types().Concat(RobotStratedies.Types()).Concat(new[] { typeof(HumanPlayer), typeof(Mexican) });
         }
 
         public void Paint()

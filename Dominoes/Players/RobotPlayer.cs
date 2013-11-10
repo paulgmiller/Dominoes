@@ -107,7 +107,7 @@ namespace Dominoes.Players
     {
         public KingOfFools(Tiles t) : base(t, null, "King") 
         { 
-            _strat = new KingOFFoolishness(Name());
+            _strat = new KingOFFoolishness(this);
         }
     }
 }

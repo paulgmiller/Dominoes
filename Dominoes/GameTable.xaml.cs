@@ -78,10 +78,10 @@ namespace Dominoes
             if (e.Key == Windows.System.VirtualKey.L)
             {
                 var localFolder = ApplicationData.Current.LocalFolder;
-                var file = await localFolder.GetFileAsync("dominoes.json");
-                var game = Game.Load(file.OpenStreamForReadAsync().Result, asciipaint => Table.Text = asciipaint);
-                Game.Swap(game);
-                Global.Logger.Comment("Loaded game from  " + file.Path);
+                //var file = await localFolder.GetFileAsync("dominoes.json");
+                var savedGame = await AzureGameEntity.Download(Game.Instance().Id);
+                Game.Swap(savedGame);
+                Global.Logger.Comment("Loaded game from  " + Game.Instance().Id);
             }
         }
     }

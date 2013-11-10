@@ -25,7 +25,7 @@ namespace Dominoes.Players
         //this seems error prone how do we autoenumerate types in here?
         public static IEnumerable<Type> Types()
         {
-            return new Type[] { typeof(Dumbness),typeof(FirstTileStratedgy), typeof(BiggestTileStatedgy), typeof(MoocherStratedgy) };
+            return new Type[] { typeof(Dumbness),typeof(FirstTileStratedgy), typeof(BiggestTileStatedgy), typeof(MoocherStratedgy), typeof(KingOFFoolishness) };
         }
     }
 
@@ -108,15 +108,15 @@ namespace Dominoes.Players
     public class KingOFFoolishness : IRobotStratedgy
     {
         [DataMember]
-        private string _me;
-        public KingOFFoolishness(string me)
+         private IPlayer _me;
+        public KingOFFoolishness(IPlayer me)
         {
             _me = me;
         }
 
         public Match Choose(Hand hand, IEnumerable<Node> ends)
         {
-            var matches = Match.Find(hand, ends.Where(e => e.Owner.Equals(_me)));
+            var matches = Match.Find(hand, ends.Where(e => e.Owner.Equals(_me.Name())));
             if (!matches.Any())
             {
                 return new BiggestTileStatedgy().Choose(hand, ends);
@@ -124,7 +124,7 @@ namespace Dominoes.Players
           
             IEnumerable<Hand> chains = matches.SelectMany(m => FindChains(hand.Except( new[] { m.domino }), new Node(m.domino, m.end)));
             var chain = chains.OrderBy(h => h.Total).First(); 
-            if (Game.Instance().GetPlayer(_me).Open)
+            if (_me.Open)
             {
                 var excess = hand.Except(chain);
                 if (Match.Find(excess, ends).Any())

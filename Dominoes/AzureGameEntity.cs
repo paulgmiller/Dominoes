@@ -41,29 +41,51 @@ namespace Dominoes
             dict["state"] = new EntityProperty(state);
             //entity property should be able to take a guid.
             dict["id"] = new EntityProperty(GameState.Id.ToString());
+            //dict["currentplayer"] = GameState.
             return dict;
         }
 
+        private static CloudTable _gamesTable;
+        private static  CloudTable GameAzureTable()
+        {
+            if (_gamesTable == null)
+            {
+                CloudStorageAccount storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=http;AccountName=dominoes;AccountKey=ehWYwN/r31V98QHRywp10U36U9bcsa6j7xBH6CnC/Mjg0QlCZfp3JEP1+tGAN1bDghOZ7VnQRtZeFhyOwB9qVA==");
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+                _gamesTable  = tableClient.GetTableReference("TrialGames");
+            }
+            return _gamesTable;
+        }
+
+
         public static async void Upload(Game g)
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=http;AccountName=dominoes;AccountKey=ehWYwN/r31V98QHRywp10U36U9bcsa6j7xBH6CnC/Mjg0QlCZfp3JEP1+tGAN1bDghOZ7VnQRtZeFhyOwB9qVA==");
-            var tableClient = storageAccount.CreateCloudTableClient();
-
             try
             {
-                CloudTable gamesTable = tableClient.GetTableReference("TrialGames");
-                if (await gamesTable.CreateIfNotExistsAsync())
-                    Global.Logger.Comment("created table:" + gamesTable.Name);
+                if (await GameAzureTable().CreateIfNotExistsAsync())
+                    Global.Logger.Comment("created table:" + GameAzureTable().Name);
 
-                TableOperation insertOperation = TableOperation.Insert(new AzureGameEntity(g));
-                TableResult res = await gamesTable.ExecuteAsync(insertOperation);
+                var op = TableOperation.InsertOrReplace(new AzureGameEntity(g));
+                TableResult res = await GameAzureTable().ExecuteAsync(op);
 
-                Global.Logger.Comment("Saved game to " + gamesTable.Uri + " " + res.ToString());
+                Global.Logger.Comment("Saved game to " + GameAzureTable().Uri + " " + res.ToString());
             }
             catch (Exception error)
             {
                 Global.Logger.Comment("Failed to save " + error.ToString());
             }
+        }
+
+        public static async Task<Game> Download(Guid id)
+        {
+       
+           
+            TableOperation fetchOperation = TableOperation.Retrieve(id.ToString(), id.ToString());
+            TableResult res = await GameAzureTable().ExecuteAsync(fetchOperation);
+            var entity = res.Result as AzureGameEntity;
+            Global.Logger.Comment("Loaded game "+ id.ToString() + " from " +  GameAzureTable().Uri);
+            return entity.GameState;
+            
         }
     }
 }
